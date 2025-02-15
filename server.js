@@ -21,10 +21,10 @@ app.use(express.json());
 
 // emit any data
 app.post("/", (req, res) => {
-  const { type, message } = req.body;
+  const { type, data } = req.body;
   clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ type, message }));
+      client.send(JSON.stringify({ type, data }));
     }
   });
   res.json({ success: true });
