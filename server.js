@@ -36,11 +36,11 @@ let clients = new Set();
 // connect web socket
 wss.on("connection", (ws) => {
   clients.add(ws);
-  console.log(`[WS] Total clients: ${clients.size}]`);
+  console.log(`[WS] Total clients: ${clients.size}`);
 
   ws.on("close", () => {
-    console.log(`[WS] Total clients: ${clients.size}]`);
     clients.delete(ws);
+    console.log(`[WS] Total clients: ${clients.size}`);
   });
 });
 
