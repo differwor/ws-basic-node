@@ -1,21 +1,24 @@
 import express from "express";
 import { WebSocketServer } from "ws";
 import cors from "cors";
+import http from "http";
 
 const app = express();
+const server = http.createServer(app);
 
-// Config allow CORS
+// create a web socket
+const wss = new WebSocketServer({ server });
+
+// config allow CORS
 app.use(
   cors({
-    origin: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000", // Allow frontend origin
+    origin: process.env.ALLOWED_CORS_URL || "http://localhost:3000", // Allow frontend origin
     credentials: true,
   })
 );
 
-// Create a web socket
-const wss = new WebSocketServer({ port: process.env.WS_PORT|| 8080 });
-
-let clients = new Set(); // List connected clients
+// to store list connected clients
+let clients = new Set(); 
 
 wss.on("connection", (ws) => {
   clients.add(ws);
@@ -40,6 +43,7 @@ app.post("/ws", (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(process.env.EMIT_API_PORT || 8081, () => {
-  console.log("[WS] WebSocket API Server running");
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`[WS] WebSocket API Server running in ${PORT}`);
 });
