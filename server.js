@@ -30,8 +30,6 @@ wss.on("connection", (ws) => {
   });
 });
 
-app.use(express.json());
-
 // API emit any messages with type
 app.post("/ws", (req, res) => {
   const { type, message } = req.body;
@@ -44,6 +42,6 @@ app.post("/ws", (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`[WS] WebSocket API Server running in ${PORT}`);
 });
