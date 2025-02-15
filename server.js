@@ -17,9 +17,24 @@ app.use(
   })
 );
 
+app.use(express.json());
+
+// emit any messages with type
+app.post("/emit", (req, res) => {
+  console.log('req', req.body);
+  const { type, message } = req.body;
+  clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify({ type, message }));
+    }
+  });
+  res.json({ success: true });
+});
+
 // to store list connected clients
 let clients = new Set(); 
 
+// connect web socket
 wss.on("connection", (ws) => {
   clients.add(ws);
   console.log("[WS] client connected, count: ", clients.size);
@@ -28,17 +43,6 @@ wss.on("connection", (ws) => {
     console.log("[WS] lient disconnected");
     clients.delete(ws);
   });
-});
-
-// API emit any messages with type
-app.post("/ws", (req, res) => {
-  const { type, message } = req.body;
-  clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ type, message }));
-    }
-  });
-  res.json({ success: true });
 });
 
 const PORT = process.env.PORT || 8080;
