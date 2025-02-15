@@ -1,5 +1,5 @@
 import express from "express";
-import { WebSocketServer } from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 import cors from "cors";
 import http from "http";
 
@@ -19,9 +19,8 @@ app.use(
 
 app.use(express.json());
 
-// emit any messages with type
-app.post("/emit", (req, res) => {
-  console.log('req', req.body);
+// emit any data
+app.post("/", (req, res) => {
   const { type, message } = req.body;
   clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
@@ -37,10 +36,10 @@ let clients = new Set();
 // connect web socket
 wss.on("connection", (ws) => {
   clients.add(ws);
-  console.log("[WS] client connected, count: ", clients.size);
+  console.log(`[WS] Total clients: ${clients.size}]`);
 
   ws.on("close", () => {
-    console.log("[WS] lient disconnected");
+    console.log(`[WS] Total clients: ${clients.size}]`);
     clients.delete(ws);
   });
 });
